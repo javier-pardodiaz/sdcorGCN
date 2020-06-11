@@ -3,7 +3,7 @@
 # 1) Input file .RData with the expression matrix M (rows=genes, columns=measurements)
 # 2) Name (including path) which will be used to save the generated files
 # 3) Number of threads to be used
-# There is a commented out section which generates unweighted gene coexpression networks using Pearson and Spearman correlations. This section has been used in the paper in order to compare the network construction methods. 
+# There is a commented out section which generates unweighted gene coexpression networks using Pearson correlation. This section has been used in the paper in order to compare the network construction methods. 
 
 # This code saves two correlation matrices (A and B) for each COGENT iteration (see paper). Afterward, it loads the correlation matrices to generate and compare gene coexpression networks using different thresholds
 # This code saves the unweighted gene coexpression network (igraph object) obtained using distance correlation and the optimal threshold value according to COGENT
@@ -39,7 +39,8 @@ preprocessing=function(em){
   # Arguments: em (expression matrix where rows are genes and columns different samples)
   min_val=min(em,na.rm = T)
   p=0.2
-  genes_remove=apply(em,2,function(x) get_lowest_values(x,p))
+  genes_remove=apply(em,2,function(x) get_lowest_values(x,p)
+                     )
   # It then removes those genes from the dataset and performs the quantile normalisation
   em[which(genes_remove==T)]=NA
   em_qnorm=normalize.quantiles(em)
@@ -68,7 +69,8 @@ element_minus_vector_elements=function(element,vector){
   # For each the element in the vector, it computes the absolute value of its difference with the resto of the elements
   # It returns a vector with as many zeros at the start as the position of the element in the vector since those values will have been calculated already, in a previous iteration
   j=c(element+1:(length(vector)-element))
-  distance_vector=sapply(j,function(j) dif(vector[element],vector[j]))
+  distance_vector=sapply(j,function(j) dif(vector[element],vector[j])
+                         )
   distance_vector=c(rep(0,element),distance_vector)
   return(distance_vector)
 }
@@ -77,7 +79,8 @@ center_matrix_1=function(row_idx,m_distance_2,mean_elements,mean_total){
   # Function employed in the calculation of signed distance correlation
   # It double-centers the expression distances
   j=c(1:row_idx)
-  row_norm=sapply(j, function(j) center_matrix_2(row_idx,j,m_distance_2,mean_elements,mean_total))
+  row_norm=sapply(j, function(j) center_matrix_2(row_idx,j,m_distance_2,mean_elements,mean_total)
+                  )
   row_norm=c(row_norm,rep(0,length(mean_elements)-row_idx))
   return(row_norm)
 }
@@ -94,15 +97,18 @@ get_normalised_distances_matrix=function(expression_vector){
   # Arguments: expression_vector (expression values of a gene in different samples)
   i = c(1:(length(expression_vector)-1))
   # Get a triangular distances matrix (absolute values)
-  m_distance=sapply(i,function(i) element_minus_vector_elements(i,expression_vector))
+  m_distance=sapply(i,function(i) element_minus_vector_elements(i,expression_vector)
+                    )
   m_distance=cbind(m_distance,0)
   # Get the complete matrix
   m_distance_2=m_distance+t(m_distance)
-  mean_elements=apply(m_distance_2,1,mean)
+  mean_elements=apply(m_distance_2,1,mean
+                     )
   mean_total=mean(m_distance_2)
   k = c(1:(length(expression_vector)))
   # Double centering
-  m_norm=sapply(k,function(k) center_matrix_1(k,m_distance_2,mean_elements,mean_total))
+  m_norm=sapply(k,function(k) center_matrix_1(k,m_distance_2,mean_elements,mean_total)
+                )
   # Return the matrix as a vector
   m_norm_2=as.vector(m_norm+t(m_norm)-(m_norm*Diagonal(nrow(m_norm))))
   return(m_norm_2)
@@ -121,10 +127,12 @@ distance_correlation_simple=function(em,cores=1){
   # Arguments: em (expression matrix), cores (threads to be used in the computing)
   if (cores>1){
     cl1= makeCluster(cores, "FORK")
-    distances_matrix<<-parApply(cl1,em,1,get_normalised_distances_matrix)
+    distances_matrix<<-parApply(cl1,em,1,get_normalised_distances_matrix
+                               )
     stopCluster(cl1)
   }else{
-    distances_matrix<<-apply(em,1,get_normalised_distances_matrix)
+    distances_matrix<<-apply(em,1,get_normalised_distances_matrix
+                            )
   }
   
   # Get all the possible combinations of pairs of genes (each pair of genes is in one of the columns in pairwise_combs)
@@ -134,11 +142,13 @@ distance_correlation_simple=function(em,cores=1){
   # Calculate the correlation of the distances vectors for each pairs of genes. This operation can be done using one or more cores.
   if (cores>1){
     cl2= makeCluster(cores, "FORK")
-    correlation_vector_d=parApply(cl2,pairwise_combs, 2, pairwise_correlation)
+    correlation_vector_d=parApply(cl2,pairwise_combs, 2, pairwise_correlation
+                                 )
     stopCluster(cl2)
     
   }else{
-    correlation_vector_d=apply(pairwise_combs, 2, pairwise_correlation)
+    correlation_vector_d=apply(pairwise_combs, 2, pairwise_correlation
+                              )
   }
   
   # Square root of the correlation vector to get distance correlation
@@ -224,7 +234,8 @@ cogentParallelCM=function(df,corrFun,repCount=25,propShared=0.5,threadCount = 4,
   # Arguments: df (dataframe containing the gene expression data), corrFun (function employed to generate the network), repCount (number of iterations), propShared (proportion of the total number of samples shared between the two networks generated in each iteration),threadCount (numbers of threads to be used), name (used to save the generated files), preprocessing (whether preprocessing is necessary) 
   j=c(1:repCount)
   cl1= makeCluster(threadCount, "FORK")
-  parSapply(cl1,j, function(j) cogentSingleCM(df,corrFun,propShared,name,iter=j,preprocessing))
+  parSapply(cl1,j, function(j) cogentSingleCM(df,corrFun,propShared,name,iter=j,preprocessing)
+            )
   stopCluster(cl1)
   return(0)
 }
@@ -235,7 +246,8 @@ cogentSingleCM=function(df,corrFun, propShared,name,iter,preprocessing){
 
   set.seed(iter)
   dfList <- splitExpressionData(df, propShared)
-  CM_reps <- lapply(dfList, function(x) do.call(corrFun, list(x),preprocessing))
+  CM_reps <- lapply(dfList, function(x) do.call(corrFun, list(x),preprocessing)
+                    )
   # Note that CM_reps contains triangular matrices
   CM=CM_reps[[1]]
   save(CM,file=paste(name,"_cm_",iter,"_A.RData",sep = ""))
@@ -263,7 +275,8 @@ threshold_cm=function(correlation_matrix, thr){
 get_unweighted_network_adjancency_matrix_and_compare=function(thr,cm_1,cm_2){
   # Generate and compare unweighted networks. It returns a similarity measure obtained using the COGENT package
   # Arguments: thr (threshold value), cm_1 and cm_2 (correlation matrices)
-  A_list <- lapply(list(cm_1,cm_2), function(x) do.call(threshold_cm, list(x, thr)))
+  A_list <- lapply(list(cm_1,cm_2), function(x) do.call(threshold_cm, list(x, thr))
+                   )
   rm(cm_1,cm_2)
   similarity_scores=getEdgeSimilarityCorrected(A_list,reduce=TRUE,type="expected")[[2]]
   rm(A_list)
@@ -280,7 +293,8 @@ cogentSingleThr=function(thrs,name,iter,align=FALSE){
   CM[is.na(CM)]=0
   cm_2=Matrix(CM,sparse = T)
   rm(CM)
-  similarity_scores=lapply(thrs,function(thrs) get_unweighted_network_adjancency_matrix_and_compare(thrs, cm_1,cm_2))
+  similarity_scores=lapply(thrs,function(thrs) get_unweighted_network_adjancency_matrix_and_compare(thrs, cm_1,cm_2)
+                           )
   rm(cm_1,cm_2)
   return(similarity_scores)
 }
@@ -290,7 +304,8 @@ cogentParallelThr=function(repCount=25,threadCount = 4,name,thrs){
   # Arguments: repCount (number of iterations), threadCount (number of threads to be used), name (name used to load and save files), thrs (thresholds to test)
   j = c(1:repCount)
   cl3= makeCluster(threadCount, "FORK")
-  similarity=parSapply(cl3,j, function(j) cogentSingleThr(thrs,name,iter=j))
+  similarity=parSapply(cl3,j, function(j) cogentSingleThr(thrs,name,iter=j)
+                       )
   stopCluster(cl3)
   return(similarity)
 }
@@ -333,6 +348,28 @@ V(NSdS)$name=rownames(M)
 
 save(NSdS, file=paste(name,"_NSdS.RData",sep=""))
 
+# Generate Pearson correlation matrix (with all the samples in the dataset)
 
+# cogentParallelCM(df,"pcor_matrix",repCount = iterations,propShared =  0.5, threadCount =  threads,name = paste(name,"_p",sep="") ,preprocessing =  TRUE)
+# similarity_scores_p=cogentParallelThr(repCount = iterations, threadCount = threads,name =paste(name,"_p",sep=""),thrs=thrs)
+# save(similarity_scores_p,file=paste(name,"_p_similarity_results_thrs.RData",sep=""))
+# similarity_scores_p=matrix(as.vector(similarity_scores_p,mode="numeric"),nrow=length(thrs))
+# similarities_p=apply(similarity_scores_p,1,mean)
 
+# P=pcor_matrix(df,prep= T,threads =  threads)
+# diag(P)=NA
+# save(P,file=paste(name,"_p_cm.RData",sep=""))
 
+# densities_p=c()
+# for (thr in thrs){
+#   densities_p=c(densities_p,sum(P>=thr,na.rm = T)/(nrow(P)*(nrow(P)-1)))
+# }
+
+# save(densities_p,file=paste(name,"_p_densities.RData",sep=""))
+# scores_p=similarities_p-densities_p
+# save(scores_p,file=paste(name,"_p_scores.RData",sep=""))
+# A=matrix(0,nrow=nrow(P),ncol=nrow(P))
+# A[P>=thrs[match(max(scores_p),scores_p)]]=1
+# NPdP=graph_from_adjacency_matrix(A,mode="upper")
+# V(NPdP)$name=rownames(M)
+# save(NPdP, file=paste(name,"_NPdP.RData",sep=""))
