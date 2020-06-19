@@ -6,6 +6,7 @@
 #     The names of the matrices must be "total", "coexpression" and "no_coexpression"
 #     The three matrices are obtained using the combine_subscores.py script asnd following the indications in the Section 6 of the Supplementary information
 #     Each matrix should have 3 columns: Interactor1, Interactor2, and Confidence score
+#     We suggest you remove those entries (rows) which have genes that not appear in the expression data
 
 require(Matrix)
 require(igraph)
