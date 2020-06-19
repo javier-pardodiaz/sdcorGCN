@@ -15,4 +15,4 @@ To perform the biological evaluation of the networks using STRING, use STRING_ev
 
 The data folder contains the expression matrices ready to be used and the matrices with the confidence scores form STRING for each organism.
 
-The results can be found in 
+The results can be found in http://opig.stats.ox.ac.uk/resources
