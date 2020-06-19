@@ -2,6 +2,7 @@
 Robust gene coexpression networks using signed distance correlation
 
 Preprint:
+
 Supplementary Infomration:
 
 Use the generate_sdcor_GCN.R script to construct GCN using signed distance correlation (network NS(dS)). This file also contains the code to generate GCN using Pearson correlations (network NP(dP)). The optimal edge densities for both correlations is estimated using COGENT (https://github.com/lbozhilova/COGENT). It also saves the similarity and scores for each tested threshold.
