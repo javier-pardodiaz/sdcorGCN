@@ -1,9 +1,11 @@
 # Code to analyse the networks (previously saved) using STRING
 # It requieres 3 arguments:
 # 1) Name (including path) which will be used to load the files (it needs to be the same as in generate_sdcor_GCN.R)
-# 2) Path to STRING data with the proper format (see STRING_format.R)
-
-# This code saves and plots the results of the evaluation using STRING
+# 2) Path to STRING data with the proper format: 
+#     A single .RData file with 3 matrices (not dataframes!). 
+#     The names of the matrices must be "total", "coexpression" and "no_coexpression"
+#     The three matrices are obtained using the combine_subscores.py script asnd following the indications in the Section 6 of the Supplementary information
+#     Each matrix should have 3 columns: Interactor1, Interactor2, and Confidence score
 
 require(Matrix)
 require(igraph)
