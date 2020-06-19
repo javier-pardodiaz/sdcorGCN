@@ -117,7 +117,8 @@ results_STRING_table[6,]=c(sum(as.numeric(sim_NPdP_total[,2])),sum(as.numeric(si
 results_STRING_table[7,]=c(sum(as.numeric(sim_NRdP_total[,2])),sum(as.numeric(sim_NRdP_coexpression[,2])),sum(as.numeric(sim_NRdP_no_coexpression[,2])))
 results_STRING_table[8,]=c(mean(sum_values_all_dS),mean(sum_values_coex_dS),mean(sum_values_no_coex_dS))
 
-
+print(results_STRING_table)
+save(results_STRING_table,file=paste(name,"_STRING_results.RData",sep=""))
 
 #Below the code to plot the results as in the paper
 par(mfrow=c(1,4))
