@@ -35,6 +35,11 @@ A[P>=sort(as.vector(P),decreasing = T)[ecount(NSdS)*2]]=1
 NPdS=graph_from_adjacency_matrix(A,mode="upper")
 V(NPdS)$name=V(NSdS)$name
 
+save(NPdS,file=paste(name,"_NPdS.RData",sep=""))
+save(NSdP,file=paste(name,"_NSdP.RData",sep=""))
+
+
+
 # Print networks summaries
 
 network_summaries=function(network,name){
