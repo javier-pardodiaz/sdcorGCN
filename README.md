@@ -15,4 +15,4 @@ To perform the biological evaluation of the networks using STRING, use STRING_ev
 
 The data folder contains the expression matrices ready to be used and the matrices with the confidence scores form STRING for each organism.
 
-The results can be found in http://opig.stats.ox.ac.uk/resources
+Results: gene coexpression networks, and results from the evaluation can be found in the results folder in this repository. Correlation matrices are available at http://opig.stats.ox.ac.uk/resources. To get access to the correlation matrices for the different COGENT iterations, please email jdiaz@stats.ox.ac.uk.
