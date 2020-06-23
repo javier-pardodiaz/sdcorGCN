@@ -118,7 +118,7 @@ results_STRING_table[4,]=c(mean(sum_values_all_dS),mean(sum_values_coex_dS),mean
 results_STRING_table[5,]=c(sum(as.numeric(sim_NSdP_total[,2])),sum(as.numeric(sim_NSdP_coexpression[,2])),sum(as.numeric(sim_NSdP_no_coexpression[,2])))
 results_STRING_table[6,]=c(sum(as.numeric(sim_NPdP_total[,2])),sum(as.numeric(sim_NPdP_coexpression[,2])),sum(as.numeric(sim_NPdP_no_coexpression[,2])))
 results_STRING_table[7,]=c(sum(as.numeric(sim_NRdP_total[,2])),sum(as.numeric(sim_NRdP_coexpression[,2])),sum(as.numeric(sim_NRdP_no_coexpression[,2])))
-results_STRING_table[8,]=c(mean(sum_values_all_dS),mean(sum_values_coex_dS),mean(sum_values_no_coex_dS))
+results_STRING_table[8,]=c(mean(sum_values_all_dP),mean(sum_values_coex_dP),mean(sum_values_no_coex_dP))
 
 print(results_STRING_table)
 save(results_STRING_table,file=paste(name,"_STRING_results.RData",sep=""))
