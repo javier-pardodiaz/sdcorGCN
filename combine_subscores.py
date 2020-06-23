@@ -26,8 +26,6 @@ def compute_prior_away(score, prior):
 
 header = True
 file = open("Yeast_coexpression.txt","w") 
- 
-
 for line in open(input_file):
 
     if header:
@@ -36,8 +34,7 @@ for line in open(input_file):
     
     l = line.split()
     
-    ## load the line
-        
+    ## load the line        
     (protein1, protein2,
      neighborhood, neighborhood_transferred,
      fusion, cooccurrence,
@@ -47,7 +44,6 @@ for line in open(input_file):
      database, database_transferred,
      textmining, textmining_transferred,
      initial_combined) = l
-
 
     ## divide by 1000
 
@@ -65,7 +61,6 @@ for line in open(input_file):
     textmining = float(textmining) / 1000
     textmining_transferred = float(textmining_transferred) / 1000
     initial_combined = int(initial_combined)
-
 
     ## compute prior away
 
