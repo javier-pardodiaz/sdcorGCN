@@ -7,7 +7,6 @@ iterations=25
 ##Threshold values to test
 
 thrs=c(0.1,0.3,0.4,0.45,0.5,0.51,0.52,0.53,0.54,0.55,0.56,0.57,0.58,0.59,0.6,0.65,0.7,0.9)
-#thrs_p=c(0.3,0.4,0.42,0.44,0.45,0.46,0.47,0.48,0.49,0.5,0.51,0.52,0.53,0.54,0.55,0.6,0.7,0.9)
 
 ## n is the number of genes in the dataset
 n=nrow(M)
@@ -19,8 +18,10 @@ library(igraph)
 sim=matrix(nrow=interations,ncol=length(thrs))
 for (i in c(1:iterations)){
   load(paste(name,"_cm_",iter,"_A.RData",sep = ""))
+  # load(paste(name,"p_cm_",iter,"_A.RData",sep = "")) # To use Pearson correlation instead of signed distance correlation
   cm_A=CM
   load(paste(name,"_cm_",iter,"_B.RData",sep = ""))
+  # load(paste(name,"p_cm_",iter,"_B.RData",sep = "")) # To use Pearson correlation instead of signed distance correlation
   cm_B=CM
   rm(CM)
   cm_A[is.na(cm_A)]=0
@@ -107,17 +108,23 @@ thr_s=thrs[match(max(score),score)]
 
 w_s=sum_weights[match(max(score),score)]
 
-##Adjancency matrices for the full dataset.
+##Adjancency matricx for the full dataset.
 ## Need to load the correlation matrix for the full dataset (obtained from https://github.com/javier-pardodiaz/sdcorGCN/blob/master/generate_sdcor_GCN.R lines 329-333 )
 load(paste(name,"_cm.RData",sep=""))
 A_S=S
 A_S[A_S<thr_s]=0
-
 diag(A_S)=0
-
 ## Obtain network and save
+WSwS=graph_from_adjacency_matrix(A_S,mode="upper",weighted = T)
+save(WSwS,file=paste(name,"_NSwS.RData",sep=""))
 
-NSwS=graph_from_adjacency_matrix(A_S,mode="upper",weighted = T)
 
-save(NSwS,file=paste(name,"_NSwS.RData",sep=""))
-
+## To generate the optimal Pearson correlation network (you need to load the Pearson correlation matrices in lines 21 and 23)
+## Need to load the correlation matrix for the full dataset (obtained from https://github.com/javier-pardodiaz/sdcorGCN/blob/master/generate_sdcor_GCN.R lines 329-333 )
+load(paste(name,"p_cm.RData",sep=""))
+A_P=P
+A_P[A_P<thr_s]=0
+diag(A_P)=0
+## Obtain network and save
+WPwP=graph_from_adjacency_matrix(A_P,mode="upper",weighted = T)
+save(WPwP,file=paste(name,"_NPwP.RData",sep=""))
