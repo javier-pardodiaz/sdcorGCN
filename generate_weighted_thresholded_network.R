@@ -116,7 +116,7 @@ A_S[A_S<thr_s]=0
 diag(A_S)=0
 ## Obtain network and save
 WSwS=graph_from_adjacency_matrix(A_S,mode="upper",weighted = T)
-save(WSwS,file=paste(name,"_NSwS.RData",sep=""))
+save(WSwS,file=paste(name,"_WSwS.RData",sep=""))
 
 
 ## To generate the optimal Pearson correlation network (you need to load the Pearson correlation matrices in lines 21 and 23)
@@ -127,4 +127,4 @@ A_P[A_P<thr_s]=0
 diag(A_P)=0
 ## Obtain network and save
 WPwP=graph_from_adjacency_matrix(A_P,mode="upper",weighted = T)
-save(WPwP,file=paste(name,"_NPwP.RData",sep=""))
+save(WPwP,file=paste(name,"_WPwP.RData",sep=""))
