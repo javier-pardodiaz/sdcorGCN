@@ -40,45 +40,22 @@ score_WSwS_total=sum(as.numeric(edge_score_weight_WSwS_total[,2])*as.numeric(edg
 
 
 #Random networks
+a=combn(V(WSwS)$name, 2)
 
-A=matrix(1,nrow=vcount(WSwS),ncol=vcount(WSwS))
-diag(A)=0
-complete_graph=graph_from_adjacency_matrix(A,mode="upper")
-V(complete_graph)$name=V(NSwP)$name
-edges_all=ends(complete_graph,c(1:ecount(complete_graph)))
-
-joint_distribution=c(E(WSwS)$weight,E(WSwS)$weight)
-objective=sum(E(WSwS)$weight)
 random_total_wS=list()
-random_coex_wS=list()
-random_no_coex_wS=list()
+
+weights=E(WSwS)$weight
+
 for (i in c(1:30)){
-  weights=sample(joint_distribution,objective/median(joint_distribution))
   
-  for(j in c(10000,1000,100,10,1)){
-    
-    if (sum(weights)<objective){
-      iter=0
-      while(sum(weights)<objective){
-        iter=iter+1
-        weights=c(weights,sample(joint_distribution,j))
-      }
-    }else{
-      iter=0
-      while(sum(weights)>objective){
-        iter=iter+1
-        weights=weights[-c(1:j)]
-      }
-    }
-  }
-  edges_random=edges_all[sample(c(1:ecount(complete_graph)),length(weights)),]
-  edges_random_paste=cbind(paste(edges_random[,1],edges_random[,2]),weights)
+  edges_random_index=sample(ncol(a),ecount(WSwS))
+  edges_paste=paste(a[1,edges_random_index],a[2,edges_random_index])
+  edges_random_paste=cbind(edges_paste,weights)
   colnames(edges_random_paste)=c("edge","weight")
   
-  sim_NRwS_total=total_paste[(total_paste[,1]%in%edges_random_paste[,1]),]
-  colnames(sim_NRwS_total)=c("edge","score")
-  edge_score_weight_NRwS_total=as.matrix(merge(sim_NRwS_total,edges_random_paste))
-  random_total_wS[[i]]=sum(as.numeric(edge_score_weight_NRwS_total[,2])*as.numeric(edge_score_weight_NRwS_total[,3]))/sum(E(WSwS)$weight)
+  sim_WRwS_total=total_paste[(total_paste[,1]%in%edges_random_paste[,1]),]
+  colnames(sim_WRwS_total)=c("edge","score")
+  edge_score_weight_WRwS_total=as.matrix(merge(sim_WRwS_total,edges_random_paste))
+  random_total_wS[[i]]=sum(as.numeric(edge_score_weight_WRwS_total[,2])*as.numeric(edge_score_weight_WRwS_total[,3]))/sum(weights)
   
 }
-
